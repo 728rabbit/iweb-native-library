@@ -1,4 +1,8 @@
 # About iweb native library
+
+--------------------------------------------------------------------------------
+
+<link href="dist/icon/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="dist/iweb.native.css" rel="stylesheet" type="text/css"/>
 <script src="dist/iweb.native.js" type="text/javascript"></script>
 <script>const iweb = (new iwebApp()); iweb.init();</script>
@@ -216,3 +220,56 @@ randomString(length)
 
 detectDevice(index)
 
+--------------------------------------------------------------------------------
+
+16. Callback - DOMContentLoaded
+
+function iweb_common_layout(function(win_width) { });
+
+function iweb_layout(function(win_width) { });
+
+function iweb_extra_layout(function(win_width) { });
+
+
+function iweb_common_func(function() { });
+
+function iweb_func(function() { });
+
+function iweb_extra_func(function() { });
+
+--------------------------------------------------------------------------------
+
+17. Callback - windowLoaded
+
+function iweb_common_layout_done(function(win_width) { });
+
+function iweb_layout_done(function(win_width) { });
+
+function iweb_extra_layout_done(function(win_width) { });
+
+
+function iweb_common_func_done(function() { });
+
+function iweb_func_done(function() { });
+
+function iweb_extra_func_done(function() { });
+
+--------------------------------------------------------------------------------
+
+18. Callback - windowResize
+
+function iweb_common_layout(function(win_width) { });
+
+function iweb_layout(function(win_width) { });
+
+function iweb_extra_layout(function(win_width) { });
+
+--------------------------------------------------------------------------------
+
+19. Callback - windowScroll
+
+function iweb_common_scroll(function(scroll_top) { });
+
+function iweb_scroll(function(scroll_top) { });
+
+function iweb_extra_scroll(function(scroll_top) { });
