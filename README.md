@@ -1,7 +1,5 @@
 # About iweb native library
 
---------------------------------------------------------------------------------
-
 <link href="dist/icon/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="dist/iweb.native.css" rel="stylesheet" type="text/css"/>
 <script src="dist/iweb.native.js" type="text/javascript"></script>
