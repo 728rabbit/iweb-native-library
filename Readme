@@ -19,6 +19,8 @@ More Information: https://github.com/728rabbit/iweb-native-library
 
 <input type="date" name="start_date" data-validation="required|date" value="2024-10-10">
 
+<input type="time" name="start_time" data-validation="required|time" value="10:00" data-start="800" data-end="2200" data-interval="10">
+
 <input type="color" name="mycolor" data-validation="required" value="#000000">
 
 --------------------------------------------------------------------------------
@@ -150,13 +152,13 @@ iweb.uploaderArea('myfiles1', {
 
 11. Dialog
 
-alert(message = '', callBack, customizeClassName)
+alert(message, callBack, customizeClassName)
 
-confirm(message = '', callBack, customizeClassName)
+confirm(message, callBack, customizeClassName)
 
-dialog(htmlCode, initFunc, callBack, customizeClassName)
+dialog(htmlContent, initFunc, callBack, customizeClassName)
 
-tipsMsg(message = '', isSuccess = false, callBack)
+tipsMsg(message, isSuccess = false, callBack)
 
 --------------------------------------------------------------------------------
 
@@ -181,6 +183,8 @@ isEmail(value)
 isPassword(value)
 
 isDate(value, format = 'Y-m-d')
+
+isTime(value)
 
 --------------------------------------------------------------------------------
 
