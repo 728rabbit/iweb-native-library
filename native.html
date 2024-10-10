@@ -106,8 +106,23 @@
                 </div>
                 
                 <div class="row">
-                    <label>日期</label>
+                    <label>開始日期</label>
                     <input type="date" name="start_date" data-validation="required|date" value="2024-10-10">
+                </div>
+                
+                <div class="row">
+                    <label>結束日期</label>
+                    <input type="date" name="end_date" data-validation="required|date" value="2024-10-31">
+                </div>
+                
+                <div class="row">
+                    <label>開始時間</label>
+                    <input type="time" name="start_time" data-validation="required|time" value="" data-start="800" data-end="2200" data-interval="10">
+                </div>
+                
+                <div class="row">
+                    <label>結束時間</label>
+                    <input type="time" name="end_time" data-validation="required|time" value="">
                 </div>
                 
                 
@@ -245,8 +260,7 @@
                         values: {
                             name: 'abc'
                         },
-                        allowed_types: '',
-                        auto_close: true
+                        allowed_types: ''
                     });
                     
                 });
