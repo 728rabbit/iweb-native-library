@@ -1102,10 +1102,8 @@ class iwebApp {
 
 			// Try to send data with progress tracking using XMLHttpRequest
 			try {
-				if (this_object.isMatch(post_data.showBusy, true) || this_object.isMatch(post_data.showBusy, 1) || this_object.isMatch(post_data.showBusy, 2)) {
-					this_object.showBusy(true, 70);
-				}
-				this_object.is_busy = true;
+                this_object.is_busy = true;
+                this_object.showBusy(true, ((post_data.showBusy) ? 70 : 0));
 
 				// Use XMLHttpRequest for progress tracking
 				const xhr = new XMLHttpRequest();
@@ -1334,11 +1332,9 @@ class iwebApp {
                             url: form.action,
                             values: {}
                         };
-
-                        const tipsMessageArea = form.querySelector('div.iweb-tips-message');
-                        const formData = new FormData(form);
                         
                         // Iterate over form data
+                        const formData = new FormData(form);
                         formData.forEach(function(value, key) {
                             const regex = /(.*)((\[)(.*)(\]))$/i; // Regular expression
                             const match = key.match(regex);
@@ -1360,32 +1356,26 @@ class iwebApp {
                         this_object.ajaxPost(post_data, function(responseData) {
                             // Callback if need
                             const complete_func = form.getAttribute('data-cfunc');
+                            const extra_func = form.getAttribute('data-efunc');
                             if ((typeof window[complete_func]) === 'function') {
                                 window[complete_func](responseData);
                             } else {
                                 if (this_object.isValue(responseData.status) && this_object.isMatch(responseData.status, 200)) {
                                     if (this_object.isValue(responseData.url)) {
-                                        window.location.href = responseData.url;
-                                    } else {
-                                        window.location.reload();
+                                        if (!this_object.isMatch(responseData.url, '#')) {
+                                            window.location.href = responseData.url;
+                                        }
+                                        else {
+                                            window.location.reload();
+                                        }
                                     }
+                                    this_object.tipsMsg(responseData.message, true);
                                 } else {
-                                    if (this_object.isValue(tipsMessageArea)) {
-                                        tipsMessageArea.classList.add('error');
-                                        tipsMessageArea.innerHTML = '';
-                                        const divElement = document.createElement('div');
-                                        const closeButton = document.createElement('a');
-                                        closeButton.className = 'close';
-                                        closeButton.textContent = '×';
-                                        const messageSpan = document.createElement('span');
-                                        messageSpan.textContent = responseData.message;
-                                        divElement.appendChild(closeButton);
-                                        divElement.appendChild(messageSpan);
-                                        tipsMessageArea.appendChild(divElement);
-                                        this_object.scrollTo('.iweb-tips-message', 40);
-                                    } else {
-                                        this_object.alert(responseData.message);
-                                    }
+                                    this_object.tipsMsg(responseData.message, false);
+                                }
+                                
+                                if ((typeof window[extra_func]) === 'function') {
+                                    window[extra_func](responseData);
                                 }
                             }
                         });
@@ -1616,7 +1606,7 @@ class iwebApp {
 				btnClose: '<i class="fa fa-close"></i>',
 				btnStart: '<i class="fa fa-cloud-upload"></i>',
 				btnRemove: '<i class="fa fa-trash"></i>',
-				auto_close: true
+				auto_close: false
 			};
 			if (this_object.isValue(options)) {
 				this_object.uploader_options['inline_selected_files_' + this_object.imd5.hash(file_input_id)] = Object.assign(
@@ -2188,6 +2178,36 @@ class iwebApp {
 			contentDiv.style.opacity = '1';
 		}, 100);
 	}
+    
+    tipsMsg(message = '', isSuccess = false, callBack) {
+        const this_object = this;
+        
+        if(this_object.isValue(message)) {
+            const tipsMessageArea = document.querySelector('div.iweb-tips-message');
+            if (this_object.isValue(tipsMessageArea)) {
+                tipsMessageArea.classList.add(((isSuccess)? 'success' : 'error'));
+                tipsMessageArea.innerHTML = '';
+                const divElement = document.createElement('div');
+                const closeButton = document.createElement('a');
+                closeButton.className = 'close';
+                closeButton.textContent = '×';
+                const messageSpan = document.createElement('span');
+                messageSpan.textContent = message;
+                divElement.appendChild(closeButton);
+                divElement.appendChild(messageSpan);
+                tipsMessageArea.appendChild(divElement);
+
+                // Callback if need
+                if ((typeof callBack) === 'function') {
+                    callBack();
+                }
+                
+                this_object.scrollTo('div.iweb-tips-message', 40);
+            } else {
+                this_object.alert(message, callBack);
+            }
+        }
+    }
 
 	// bind event
     bindEvent(eventType, selector, callBack) {
@@ -2486,14 +2506,18 @@ class iwebApp {
 
 				// Create the main div
 				const processingDiv = document.createElement('div');
-				processingDiv.className = 'iweb-processing';
-				if (this_object.isNumber(value, true)) {
-					processingDiv.style.background = 'rgba(255,255,255,' + opacity + ')';
-				}
+				processingDiv.classList.add('iweb-processing');
+                if(parseFloat(opacity) === 0) {
+                    processingDiv.style.opacity = 0;
+                }
+                else {
+                    processingDiv.style.background = 'rgba(255, 255, 255, ' + opacity + ')';
+                }
+                
 
 				// Create the inner loading div
 				const loadingDiv = document.createElement('div');
-				loadingDiv.className = 'loading';
+				loadingDiv.classList.add('loading');
 
 				// Create the SVG element
 				const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

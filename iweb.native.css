@@ -303,8 +303,8 @@ div.iweb-tips-message.error > div {
 }
 
 div.iweb-tips-message.success > div {
-    background-color: #fff8c4;
-    border-color: #f2c779;
+    background-color: #e1f7d2;
+    border-color: #9dd864;
 }
 
 div.iweb-tips-message > div > a.close {
