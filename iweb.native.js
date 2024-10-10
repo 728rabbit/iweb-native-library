@@ -93,38 +93,46 @@ class iwebApp {
             // Get iweb-viewer width
             this_object.win_width = parseInt(document.querySelector('div.iweb-viewer').offsetWidth);
 			this_object.responsive();
-
-			safeCallFunction('iweb_common_layout', this_object.win_width);
-			safeCallFunction('iweb_layout', this_object.win_width);
-			safeCallFunction('iweb_extra_layout', this_object.win_width);
-			safeCallFunction('iweb_common_func');
-			safeCallFunction('iweb_func');
-			safeCallFunction('iweb_extra_func');
+            
+            setTimeout(function() {
+                safeCallFunction('iweb_common_layout', this_object.win_width);
+                safeCallFunction('iweb_layout', this_object.win_width);
+                safeCallFunction('iweb_extra_layout', this_object.win_width);
+                safeCallFunction('iweb_common_func');
+                safeCallFunction('iweb_func');
+                safeCallFunction('iweb_extra_func');
+            }, 100);
 		});
 
 		window.onload = function() {
-			safeCallFunction('iweb_common_layout_done', this_object.win_width);
-			safeCallFunction('iweb_layout_done', this_object.win_width);
-			safeCallFunction('iweb_extra_layout_done', this_object.win_width);
-			safeCallFunction('iweb_common_func_done');
-			safeCallFunction('iweb_func_done');
-			safeCallFunction('iweb_extra_func_done');
+            setTimeout(function() {
+                safeCallFunction('iweb_common_layout_done', this_object.win_width);
+                safeCallFunction('iweb_layout_done', this_object.win_width);
+                safeCallFunction('iweb_extra_layout_done', this_object.win_width);
+                safeCallFunction('iweb_common_func_done');
+                safeCallFunction('iweb_func_done');
+                safeCallFunction('iweb_extra_func_done');
+            }, 100);
 		};
 
 		window.addEventListener('resize', function() {
-			if (this_object.win_width !== parseInt(document.querySelector('div.iweb-viewer').offsetWidth)) {
-				this_object.win_width = parseInt(document.querySelector('div.iweb-viewer').offsetWidth);
-				this_object.responsive();
-				safeCallFunction('iweb_common_layout', this_object.win_width);
-				safeCallFunction('iweb_layout', this_object.win_width);
-				safeCallFunction('iweb_extra_layout', this_object.win_width);
-			}
+            setTimeout(function() {
+                if (this_object.win_width !== parseInt(document.querySelector('div.iweb-viewer').offsetWidth)) {
+                    this_object.win_width = parseInt(document.querySelector('div.iweb-viewer').offsetWidth);
+                    this_object.responsive();
+                    safeCallFunction('iweb_common_layout', this_object.win_width);
+                    safeCallFunction('iweb_layout', this_object.win_width);
+                    safeCallFunction('iweb_extra_layout', this_object.win_width);
+                }
+            }, 100);
 		});
 
 		window.addEventListener('scroll', function() {
-			safeCallFunction('iweb_common_scroll', window.scrollY);
-			safeCallFunction('iweb_scroll', window.scrollY);
-			safeCallFunction('iweb_extra_scroll', window.scrollY);
+            setTimeout(function() {
+                safeCallFunction('iweb_common_scroll', window.scrollY);
+                safeCallFunction('iweb_scroll', window.scrollY);
+                safeCallFunction('iweb_extra_scroll', window.scrollY);
+            }, 100);
 		});
 	}
 
@@ -160,9 +168,9 @@ class iwebApp {
 				if (!this_object.isValue(href) || this_object.isMatch(href, '#')) {
 					e.preventDefault();
 					if (target.closest('div.iweb-tips-message')) {
-						target.closest('div.iweb-tips-message').innerHTML = '';
                         target.closest('div.iweb-tips-message').classList.remove('error');
                         target.closest('div.iweb-tips-message').classList.remove('success');
+                        target.closest('div.iweb-tips-message').innerHTML = '';
 					}
 				}
 			}
@@ -1099,11 +1107,9 @@ class iwebApp {
 			// Helper function to safely call if the function is defined
 			const safeFinalFunction = () => {
 				this_object.is_busy = false;
-				if (this_object.isMatch(post_data.showBusy, true) || this_object.isMatch(post_data.showBusy, 1) || this_object.isMatch(post_data.showBusy, 2)) {
-					if (!this_object.isMatch(post_data.showBusy, 2)) {
-						this_object.showBusy(false);
-					}
-				}
+				if (!this_object.isMatch(post_data.showBusy, 2)) {
+                    this_object.showBusy(false);
+                }
 
 				// Final callBack if needed
 				if ((typeof final_callBack) === 'function') {
@@ -1390,7 +1396,9 @@ class iwebApp {
                                             window.location.reload();
                                         }
                                     }
-                                    this_object.tipsMsg(responseData.message, true);
+                                    else {
+                                        this_object.tipsMsg(responseData.message, true);
+                                    }
                                 } else {
                                     this_object.tipsMsg(responseData.message, false);
                                 }
@@ -1402,7 +1410,7 @@ class iwebApp {
                         });
                     } else {
                         if (!((typeof window[validation_func]) === 'function')) {
-                            this_object.scrollTo('.error', 40);
+                            this_object.scrollTo('.error');
                         }
                     }
 				}));
@@ -2207,7 +2215,10 @@ class iwebApp {
         const this_object = this;
         if(this_object.isValue(message)) {
             const tipsMessageArea = document.querySelector('div.iweb-tips-message');
-            if (this_object.isValue(tipsMessageArea)) {
+            if (tipsMessageArea) {
+                const defaultOffset = (tipsMessageArea.getAttribute('data-offset') || 0);
+                tipsMessageArea.classList.remove('error');
+                tipsMessageArea.classList.remove('success');
                 tipsMessageArea.classList.add(((isSuccess)? 'success' : 'error'));
                 tipsMessageArea.innerHTML = '';
                 const divElement = document.createElement('div');
@@ -2219,13 +2230,11 @@ class iwebApp {
                 divElement.appendChild(closeButton);
                 divElement.appendChild(messageSpan);
                 tipsMessageArea.appendChild(divElement);
-
+                this_object.scrollTo('div.iweb-tips-message', parseInt(defaultOffset));
                 // Callback if need
                 if ((typeof callBack) === 'function') {
                     callBack();
                 }
-                
-                this_object.scrollTo('div.iweb-tips-message', 40);
             } else {
                 this_object.alert(message, callBack);
             }
@@ -2612,17 +2621,18 @@ class iwebApp {
 		}
 	}
 
-	scrollTo(element, adjustment_value, callBack) {
+	scrollTo(element, offset, callBack) {
 		const this_object = this;
-
+        const targetElement = document.querySelector(element);
+        
 		let element_scroll_top_value = 0;
-		adjustment_value = (this_object.isValue(adjustment_value)) ? parseInt(adjustment_value) : 0;
-
-		const targetElement = document.querySelector(element);
-		if (targetElement) {
-			element_scroll_top_value = Math.max(0, parseInt(targetElement.getBoundingClientRect().top + window.pageYOffset) - adjustment_value);
-		}
-
+        if (targetElement) {
+            offset = (this_object.isValue(offset)) ? parseInt(offset) : 40;
+            if(parseInt(targetElement.offsetTop) <= parseInt(targetElement.getBoundingClientRect().top + window.pageYOffset)) {
+                element_scroll_top_value = Math.max(0, (parseInt(targetElement.offsetTop) - offset));
+            }
+        }
+        
 		// Smooth scrolling
 		window.scrollTo({
 			top: element_scroll_top_value,
@@ -3297,7 +3307,7 @@ class iTimePicker {
         picker.style.backgroundColor = '#fff';
         picker.style.padding = '10px';
         picker.style.marginTop = '2px';
-        picker.style.maxHeight = '240px';
+        picker.style.maxHeight = '200px';
         picker.style.overflow = 'auto';
         picker.style.zIndex = '100';
 
