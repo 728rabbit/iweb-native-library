@@ -58,6 +58,8 @@ class iwebApp {
 		this.uploader_files_skip = {};
 
 		this.win_width = 0;
+        
+        this.eventMap = {};
 	}
 
 	init() {
@@ -335,18 +337,23 @@ class iwebApp {
 						}
                     }
                     else {
-                        // Autocomplete input
-						input.type = 'hidden';
-						input.classList.add('fill-id');
-						input.removeAttribute('data-autocomplete');
-
 						// Create seach input
+                        const mustRequired = (this_object.isMatch(input.getAttribute('data-required'), 1)) ? true : false;
+                        const canNew = (this_object.isMatch(input.getAttribute('data-cannew', 1))) ? true : false;
+
 						const fillText = document.createElement('input');
 						fillText.type = 'text';
+                        if(mustRequired && canNew) {
+                            fillText.name = (input.name + '_txt');
+                        }
+                        fillText.placeholder = (input.getAttribute('data-placeholder') || '');
 						fillText.classList.add('fill-text');
 						fillText.style.display = 'block';
 						fillText.style.width = '100%';
 						fillText.autocomplete = 'off';
+                        if(mustRequired && canNew) {
+                            fillText.setAttribute('data-validation', 'required');
+                        }
 						fillText.addEventListener('input', this_object.deBounce(function(e) {
                             const target = e.target;
                             
@@ -495,6 +502,21 @@ class iwebApp {
                             fillReset.appendChild(fillResetIcon);
 							wrapperDiv.appendChild(fillReset);
 						}
+                        
+                        // Hide input
+                        input.type = 'hidden';
+						input.classList.add('fill-id');
+						input.removeAttribute('data-required');
+                        input.removeAttribute('data-cannew');
+                        input.removeAttribute('data-autocomplete');
+                        if(mustRequired && canNew) {
+                            input.removeAttribute('data-required');
+                        }
+                        else {
+                            if(mustRequired) {
+                                input.setAttribute('data-validation', 'required');
+                            }
+                        }
 					}
                     
 					// Set input styles
@@ -2244,14 +2266,38 @@ class iwebApp {
 	// bind event
     bindEvent(eventType, selector, callBack) {
         const this_object = this;
-		document.addEventListener(eventType, this_object.deBounce(function(e) {
-            // Check if the clicked element matches the selector
-            const target = e.target.closest(selector);
-            if (target) {
-                // Pass the matched target and the event
-                callBack(target, e);
+        
+        // If the eventType is not yet handled, set it up
+        if (!this_object.eventMap[eventType]) {
+            this_object.eventMap[eventType] = [];
+
+            // Add a single event listener for the document on this event type
+            document.addEventListener(eventType, function(e) {
+                // Loop through all the registered selectors for this event type
+                this_object.eventMap[eventType].forEach(function(item) {
+                    const target = e.target.closest(item.selector);
+                    if (target) {
+                        // Call the corresponding callback with the target and event
+                        item.callBack(target, e);
+                    }
+                });
+            });
+        }
+
+        // Add the selector and its callback to the event map
+        this_object.eventMap[eventType].push({ selector, callBack });
+    }
+    
+    unBindEvent(eventType, selector) {
+        if (this.eventMap[eventType]) {
+            // Filter out the event listener that matches the selector
+            this.eventMap[eventType] = this.eventMap[eventType].filter(item => item.selector !== selector);
+
+            // If there are no more selectors for this event type, clean up
+            if (this.eventMap[eventType].length === 0) {
+                delete this.eventMap[eventType];
             }
-        }, 10, false));
+        }
     }
     
     triggerEvent(eventType, selector) {
