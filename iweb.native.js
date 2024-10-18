@@ -729,13 +729,13 @@ class iwebApp {
                                                             option.selected = false;
                                                         }
                                                     });
-                                                    selectElement.dispatchEvent(new Event('change'));
+                                                    selectElement.dispatchEvent(new Event('change', { bubbles: true }));
 
                                                 } else {
                                                     // Handle single selection
                                                     target.closest('div.iweb-select').classList.remove('show');
                                                     selectElement.value = target.getAttribute('data-value');
-                                                    selectElement.dispatchEvent(new Event('change'));
+                                                    selectElement.dispatchEvent(new Event('change', { bubbles: true }));
                                                 }
 											}));
                                             
@@ -797,14 +797,14 @@ class iwebApp {
                                                     option.selected = false;
                                                 }
                                             });
-                                            selectElement.dispatchEvent(new Event('change'));
+                                            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
 
                                         }
                                         else {
                                             // Single selection
                                             target.closest('div.iweb-select').classList.remove('show');
                                             selectElement.value = target.getAttribute('data-value');
-                                            selectElement.dispatchEvent(new Event('change'));
+                                            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
                                         }
 									}));
                                     
@@ -1446,7 +1446,7 @@ class iwebApp {
                                 this_object.isMatch(element.type, 'radio') ||
                                 this_object.isMatch(element.type, 'select-one') ||
                                 this_object.isMatch(element.type, 'select-multiple')) {
-                                element.dispatchEvent(new Event('change'));
+                                element.dispatchEvent(new Event('change', { bubbles: true }));
                             } else {
                                 if (element.closest('div.iweb-input-autocomplete')) {
                                     // Remove error & tips
@@ -1495,7 +1495,7 @@ class iwebApp {
                                         element.closest('div.iweb-input-autocomplete').appendChild(fillReset);
                                     }
                                 } else {
-                                    element.dispatchEvent(new Event('input'));
+                                    element.dispatchEvent(new Event('input', { bubbles: true }));
                                 }
                             }
                         });
@@ -1593,7 +1593,7 @@ class iwebApp {
 					}));
 
 					closeAllButton.addEventListener('click', this_object.deBounce(function() {
-						document.querySelector('div.iweb-info-dialog.uploader > div > div.content > a.btn-close').dispatchEvent(new Event('click'));
+						document.querySelector('div.iweb-info-dialog.uploader > div > div.content > a.btn-close').dispatchEvent(new Event('click', { bubbles: true }));
 					}));
 
 					listContainer.querySelectorAll('div.item > button.start').forEach(function(button) {
@@ -1609,7 +1609,7 @@ class iwebApp {
                             this_object.uploader_files_skip['selected_files'].push(target.closest('div.item').getAttribute('data-index').toString());
                             target.closest('div.item').remove();
                             if (listContainer.querySelectorAll('div.item').length === 0) {
-                                document.querySelector('div.iweb-info-dialog.uploader > div > div.content > a.btn-close').dispatchEvent(new Event('click'));
+                                document.querySelector('div.iweb-info-dialog.uploader > div > div.content > a.btn-close').dispatchEvent(new Event('click', { bubbles: true }));
                             }
 						}));
 					});
@@ -1883,7 +1883,7 @@ class iwebApp {
 				if (parseInt(startCount) === 0) {
 					uploaderDialog.querySelector('div.action > button.start-all')?.remove();
 					if (this_object.uploader_options[mainIndex].auto_close) {
-						uploaderDialog.querySelector('div.action > button.close').dispatchEvent(new Event('click'));
+						uploaderDialog.querySelector('div.action > button.close').dispatchEvent(new Event('click', { bubbles: true }));
 					}
 				}
 				uploaderDialog.classList.remove('busy');
@@ -2272,7 +2272,7 @@ class iwebApp {
             this_object.eventMap[eventType] = [];
 
             // Add a single event listener for the document on this event type
-            document.addEventListener(eventType, function(e) {
+            document.addEventListener(eventType, this_object.deBounce(function(e) {
                 // Loop through all the registered selectors for this event type
                 this_object.eventMap[eventType].forEach(function(item) {
                     const target = e.target.closest(item.selector);
@@ -2281,7 +2281,7 @@ class iwebApp {
                         item.callBack(target, e);
                     }
                 });
-            });
+            }, 100, false));
         }
 
         // Add the selector and its callback to the event map
@@ -3236,8 +3236,8 @@ class iDatePicker {
 		// Parse the date from the formatted string
 		const selectedDate = this.parseDate(dateObj);
 		if (!isNaN(selectedDate)) {
-			this.activeInputElement.value = this.formatDate(selectedDate);
-			this.activeInputElement.dispatchEvent(new Event('input'));
+			this.activeInputElement.value = this.formatDate(selectedDate); 
+            this.activeInputElement.dispatchEvent(new Event('input', { bubbles: true }));
 			this.selectedDate = selectedDate;
 			this.buildCalendar();
 			this.hideCalendar();
