@@ -339,7 +339,7 @@ class iwebApp {
                     else {
 						// Create seach input
                         const mustRequired = (this_object.isMatch(input.getAttribute('data-required'), 1)) ? true : false;
-                        const canNew = (this_object.isMatch(input.getAttribute('data-cannew', 1))) ? true : false;
+                        const canNew = (this_object.isMatch(input.getAttribute('data-cannew'), 1)) ? true : false;
 
 						const fillText = document.createElement('input');
 						fillText.type = 'text';
