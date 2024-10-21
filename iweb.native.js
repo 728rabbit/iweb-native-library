@@ -161,12 +161,12 @@ class iwebApp {
 		}
 
 		// Bind event for global click
-		document.body.addEventListener('click', this_object.deBounce(function(e) {
+		document.body.addEventListener('click', function(e) {
 			const target = e.target;
-
+     
 			// Handle anchor click
-			if ((target.tagName.toLowerCase()) === 'a') {
-				const href = target.getAttribute('href');
+			if (target.closest('a')) {
+				const href = target.closest('a').getAttribute('href');
 				if (!this_object.isValue(href) || this_object.isMatch(href, '#')) {
 					e.preventDefault();
 					if (target.closest('div.iweb-tips-message')) {
@@ -190,7 +190,7 @@ class iwebApp {
                     e1.classList.remove('show'); 
                 });
 			}
-		}, 100, false));
+		});
 
 		// Init default font size
 		const fontSizeClasses = ['small-font', 'middle-font', 'large-font'];
