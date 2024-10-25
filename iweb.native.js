@@ -1409,17 +1409,32 @@ class iwebApp {
                             if ((typeof window[complete_func]) === 'function') {
                                 window[complete_func](responseData);
                             } else {
+                                const showAlert = (this_object.isMatch(responseData.alert, true) || this_object.isMatch(responseData.alert, 1));
                                 if (this_object.isValue(responseData.status) && this_object.isMatch(responseData.status, 200)) {
                                     if (this_object.isValue(responseData.url)) {
-                                        if (!this_object.isMatch(responseData.url, '#')) {
-                                            window.location.href = responseData.url;
+                                        if(showAlert) {
+                                            this_object.tipsMsg(responseData.message, true, function() {
+                                                if (!this_object.isMatch(responseData.url, '#')) {
+                                                    window.location.href = responseData.url;
+                                                }
+                                                else {
+                                                    window.location.reload();
+                                                }
+                                            });
                                         }
                                         else {
-                                            window.location.reload();
+                                            if (!this_object.isMatch(responseData.url, '#')) {
+                                                window.location.href = responseData.url;
+                                            }
+                                            else {
+                                                window.location.reload();
+                                            }
                                         }
                                     }
                                     else {
-                                        this_object.tipsMsg(responseData.message, true);
+                                        this_object.tipsMsg(responseData.message, true, function() {
+                                            window.location.reload();
+                                        });
                                     }
                                 } else {
                                     this_object.tipsMsg(responseData.message, false);
@@ -2261,6 +2276,12 @@ class iwebApp {
                 this_object.alert(message, callBack);
             }
         }
+        else {
+            // Callback if need
+            if ((typeof callBack) === 'function') {
+                callBack();
+            }
+        }
     }
 
 	// bind event
@@ -2670,13 +2691,11 @@ class iwebApp {
 	scrollTo(element, offset, callBack) {
 		const this_object = this;
         const targetElement = document.querySelector(element);
-        
+       
 		let element_scroll_top_value = 0;
         if (targetElement) {
-            offset = (this_object.isValue(offset)) ? parseInt(offset) : 40;
-            if(parseInt(targetElement.offsetTop) <= parseInt(targetElement.getBoundingClientRect().top + window.pageYOffset)) {
-                element_scroll_top_value = Math.max(0, (parseInt(targetElement.offsetTop) - offset));
-            }
+            offset = (this_object.isValue(offset)) ? parseInt(offset) : 80;
+            element_scroll_top_value = Math.max(0, parseInt(targetElement.getBoundingClientRect().top) + window.pageYOffset - offset);
         }
         
 		// Smooth scrolling
