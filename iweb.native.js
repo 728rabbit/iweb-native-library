@@ -2293,7 +2293,7 @@ class iwebApp {
             this_object.eventMap[eventType] = [];
 
             // Add a single event listener for the document on this event type
-            document.addEventListener(eventType, this_object.deBounce(function(e) {
+            document.addEventListener(eventType, function(e) {
                 // Loop through all the registered selectors for this event type
                 this_object.eventMap[eventType].forEach(function(item) {
                     const target = e.target.closest(item.selector);
@@ -2302,7 +2302,7 @@ class iwebApp {
                         item.callBack(target, e);
                     }
                 });
-            }, 100, false));
+            });
         }
 
         // Add the selector and its callback to the event map
