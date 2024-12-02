@@ -174,6 +174,22 @@ class iwebApp {
                         target.closest('div.iweb-tips-message').classList.remove('success');
                         target.closest('div.iweb-tips-message').innerHTML = '';
 					}
+                    else if(target.closest('div.iweb-input-autocomplete')) {
+                        // Reset id input & search input
+                        const fillId = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-id');
+                        const fillText = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-text');
+                        const fillReset = target.closest('div.iweb-input-autocomplete').querySelector('a.fill-reset');
+                        fillId.value = '';
+                        fillText.value = '';
+                        fillText.readOnly = false;
+                        fillReset.remove();
+
+                        // Callback if need
+                        const remove_callBack = fillId.getAttribute('data-rfunc');
+                        if ((typeof window[remove_callBack]) === 'function') {
+                            window[remove_callBack]();
+                        }
+                    }
 				}
 			}
 
@@ -228,6 +244,18 @@ class iwebApp {
 		this_object.checkBox();
 		this_object.radioBox();
 		this_object.iframe();
+        
+        // insert div before & after into editor div
+        const editors = document.querySelectorAll('div.iweb-editor');
+        editors.forEach(editor => {
+            const clearBefore = document.createElement('div');
+            clearBefore.className = 'clearboth';
+            editor.insertAdjacentElement('afterbegin', clearBefore);
+            
+            const clearAfter = document.createElement('div');
+            clearAfter.className = 'clearboth';
+            editor.insertAdjacentElement('beforeend', clearAfter);
+        });
 	}
 
 	inputBox(inputObject, callBack) {
@@ -410,24 +438,6 @@ class iwebApp {
                                                 // Create reset button
                                                 const fillReset = document.createElement('a');
                                                 fillReset.classList.add('fill-reset');
-                                                fillReset.addEventListener('click', this_object.deBounce(function(e2) {
-                                                    const target = e2.target;
-                                                    
-                                                    // Reset id input & search input
-                                                    const fillId = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-id');
-                                                    const fillText = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-text');
-                                                    const fillReset = target.closest('div.iweb-input-autocomplete').querySelector('a.fill-reset');
-                                                    fillId.value = '';
-                                                    fillText.value = '';
-                                                    fillText.readOnly = false;
-                                                    fillReset.remove();
-
-                                                    // Callback if need
-                                                    const remove_callBack = fillId.getAttribute('data-rfunc');
-                                                    if ((typeof window[remove_callBack]) === 'function') {
-                                                        window[remove_callBack]();
-                                                    }
-                                                }));
                                                 
                                                 // Create Reset icon
                                                 const fillResetIcon = document.createElement('i');
@@ -474,25 +484,7 @@ class iwebApp {
 
 							const fillReset = document.createElement('a');
 							fillReset.classList.add('fill-reset');
-                            fillReset.addEventListener('click', this_object.deBounce(function(e) {
-                                const target = e.target;
-                                
-                                // Reset id input & search input
-                                const fillId = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-id');
-                                const fillText = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-text');
-                                const fillReset = target.closest('div.iweb-input-autocomplete').querySelector('a.fill-reset');
-                                fillId.value = '';
-                                fillText.value = '';
-                                fillText.readOnly = false;
-                                fillReset.remove();
 
-                                // Callback if need
-                                const remove_callBack = fillId.getAttribute('data-rfunc');
-                                if ((typeof window[remove_callBack]) === 'function') {
-                                    window[remove_callBack]();
-                                }
-							}));
-                            
                             // Create Reset icon
 							const fillResetIcon = document.createElement('i');
 							fillResetIcon.classList.add('fa', 'fa-times');
@@ -1480,24 +1472,6 @@ class iwebApp {
                                         // Create reset button
                                         const fillReset = document.createElement('a');
                                         fillReset.classList.add('fill-reset');
-                                        fillReset.addEventListener('click', this_object.deBounce(function(e) {
-                                            const target = e.target;
-                                            
-                                            // Reset id input & search input
-                                            const fillId = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-id');
-                                            const fillText = target.closest('div.iweb-input-autocomplete').querySelector('input.fill-text');
-                                            const fillReset = target.closest('div.iweb-input-autocomplete').querySelector('a.fill-reset');
-                                            fillId.value = '';
-                                            fillText.value = '';
-                                            fillText.readOnly = false;
-                                            fillReset.remove();
-
-                                            // Callback if need
-                                            const remove_callBack = fillId.getAttribute('data-rfunc');
-                                            if ((typeof window[remove_callBack]) === 'function') {
-                                                window[remove_callBack]();
-                                            }
-                                        }));
 
                                         // Create Reset icon
                                         const fillResetIcon = document.createElement('i');
